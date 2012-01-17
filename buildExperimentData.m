@@ -6,7 +6,7 @@ numSpecimen = length(specimenData);
 exptDataDir = 'experimentData';
 specimenDataDir = 'specimenData';
 
-for iTest = 4 %1:numSpecimen
+for iTest = 1:numSpecimen
     % Retreive Desired Channels
     channels = channelNames(iTest);
     numChannels = length(channels);
@@ -36,6 +36,33 @@ for iTest = 4 %1:numSpecimen
         exptDataUnits.(channels{iChannel}) = iUnits.(channels{iChannel});
     end
     
+    % Convert to Consistent Units
+    for iChannel = 1:numChannels
+        channel = channels{iChannel};
+        switch exptDataUnits.(channel)
+            case {'inches','in','in.'}
+                % No conversion necessary
+                exptDataUnits.(channel) = 'in';
+            case {'kip','kips'}
+                % No conversion necessary
+                exptDataUnits.(channel) = 'kip';
+            case {'deg','degrees'}
+                exptData.(channel) = convertUnits.angle(...
+                    exptData.(channel),'deg','rad');
+                exptDataUnits.(channel) = 'rad';
+            case {'k-ft','kip-ft'}
+                exptData.(channel) = convertUnits.moment(...
+                    exptData.(channel),'kft','kin');
+                exptDataUnits.(channel) = 'kin';
+            case 'micro-e'
+                exptData.(channel) = 10^6 * exptData.(channel);
+                exptDataUnits.(channel) = 'in/in';
+            otherwise
+                error('Unknwon units: %s',exptDataUnits.(channel))
+        end
+    end
+        
+    
     % Save Data
     save(fullfile(exptDataDir,[specimenData(iTest).specimen '.mat']),...
         'exptData','exptDataUnits','-v7.3');
@@ -43,7 +70,7 @@ for iTest = 4 %1:numSpecimen
     exptDataAll = exptData;
             
     % Split Data Into Load Cases
-    lcFilename = fullfile(specimenDataDir,[specimenData(iTest).specimen '-LoadCases.csv']);
+    lcFilename = fullfile(specimenDataDir,specimenData(iTest).specimen,'LoadCases.csv');
     if exist(lcFilename,'file') == 2
         [~,lcData] = csvread2(lcFilename);
         
@@ -71,7 +98,7 @@ for iTest = 4 %1:numSpecimen
     end
     
     % Limit Point Data
-    lpFilename = fullfile(specimenDataDir,[specimenData(iTest).specimen '-LimitPoints.csv']);
+    lpFilename = fullfile(specimenDataDir,specimenData(iTest).specimen,'LimitPoints.csv');
     if exist(lpFilename,'file') == 2
         [~,lpData] = csvread2(lpFilename);
         
@@ -107,5 +134,3 @@ for iTest = 4 %1:numSpecimen
             'limitPoints','exptDataUnits','-v7.3');
     end    
 end
-
-
