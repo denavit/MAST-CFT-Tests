@@ -11,4 +11,8 @@ data.RX_Force_Base = iBaseForces(:,4);
 data.RY_Force_Base = iBaseForces(:,5);
 data.RZ_Force_Base = iBaseForces(:,6);
 
+data.Mx1_Base = -specimen.L*data.Y_Force;
+data.My1_Base =  specimen.L*data.X_Force;
+
+
 end
