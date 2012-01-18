@@ -6,6 +6,8 @@ specimenDataDir = 'specimenData';
 [~,data]       = csvread2(fullfile(specimenDataDir,'specimenData.csv'));
 [~,imperfData] = csvread2(fullfile(specimenDataDir,'initialImperfections.csv'));
 [~,lc1Data]    = csvread2(fullfile(specimenDataDir,'loadCase1.csv'));
+[~,lc2Data]    = csvread2(fullfile(specimenDataDir,'loadCase2.csv'));
+[~,lc3Data]    = csvread2(fullfile(specimenDataDir,'loadCase3.csv'));
 
 numTests = length(data.name);
 
@@ -86,21 +88,69 @@ for i = 1:numTests
     end
     
     % Load Case 1
-    specimenData(i).LC1.numCycles = lc1Data.Num_Cycle(i);
-    targets = zeros(0,2);
-    dirOfMotion = [0 0];
-    if specimenData(i).LC1.numCycles > 0
-        targets = vertcat(targets,...
-            [lc1Data.target_Dx_LC1a(i) lc1Data.target_Dy_LC1a(i)]);
-        dirOfMotion = targets - [specimenData(i).Dxo specimenData(i).Dyo];
-        dirOfMotion = dirOfMotion/norm(dirOfMotion);
+    if isnan(lc1Data.Number_Of_Cycles(i))
+        specimenData(i).LC1 = [];
+    else
+        specimenData(i).LC1.numCycles   = lc1Data.Number_Of_Cycles(i);
+        specimenData(i).LC1.dirOfMotion = lc1Data.Direction_Of_Motion(i);
+        switch specimenData(i).LC1.numCycles
+            case 0
+                specimenData(i).LC1.targets = zeros(0,2);
+            case 1
+                specimenData(i).LC1.targets = ...
+                    [lc1Data.target_Dx_LC1a(i) lc1Data.target_Dy_LC1a(i)];
+            case 2
+                specimenData(i).LC1.targets = ...
+                    [lc1Data.target_Dx_LC1a(i) lc1Data.target_Dy_LC1a(i)
+                    lc1Data.target_Dx_LC1b(i) lc1Data.target_Dy_LC1b(i)];
+            case 3
+                specimenData(i).LC1.targets = ...
+                    [lc1Data.target_Dx_LC1a(i) lc1Data.target_Dy_LC1a(i)
+                    lc1Data.target_Dx_LC1b(i) lc1Data.target_Dy_LC1b(i)
+                    lc1Data.target_Dx_LC1c(i) lc1Data.target_Dy_LC1c(i)];
+            otherwise
+                error('Unknwon Number_Of_Cycles');
+        end
     end
-    if specimenData(i).LC1.numCycles > 1
-        targets = vertcat(targets,...
-            [lc1Data.target_Dx_LC1b(i) lc1Data.target_Dy_LC1b(i)]);
+
+    % Load Case 2  
+    if isnan(lc2Data.Number_Of_Axial_Load_Levels(i))
+        specimenData(i).LC2 = [];
+    else
+        specimenData(i).LC2.numAxialLoads = lc2Data.Number_Of_Axial_Load_Levels(i);
+        specimenData(i).LC2.dirOfMotion   = lc2Data.Direction_Of_Motion(i);
+        switch specimenData(i).LC2.numAxialLoads
+            case 0
+                specimenData(i).LC2.axialLoads = [];
+            case 1
+                specimenData(i).LC2.axialLoads = lc2Data.Axial_Load_LC2a(i);
+            case 2
+                specimenData(i).LC2.axialLoads = [lc2Data.Axial_Load_LC2a(i) lc2Data.Axial_Load_LC2b(i)];
+            case 3
+                specimenData(i).LC2.axialLoads = [lc2Data.Axial_Load_LC2a(i) lc2Data.Axial_Load_LC2b(i) lc2Data.Axial_Load_LC2c(i) ];
+            otherwise
+                error('Unknwon Number_Of_Axial_Load_Levels');
+        end
     end
-    specimenData(i).LC1.targets = targets;
-    specimenData(i).LC1.dirOfMotion = dirOfMotion;
+    
+    % Load Case 3   
+    if isnan(lc3Data.Number_Of_Axial_Load_Levels(i))
+        specimenData(i).LC3 = [];
+    else
+        specimenData(i).LC3.numAxialLoads = lc3Data.Number_Of_Axial_Load_Levels(i);
+        switch specimenData(i).LC3.numAxialLoads
+            case 0
+                specimenData(i).LC3.axialLoads = [];
+            case 1
+                specimenData(i).LC3.axialLoads = lc3Data.Axial_Load_LC3a(i);
+            case 2
+                specimenData(i).LC3.axialLoads = [lc3Data.Axial_Load_LC3a(i) lc3Data.Axial_Load_LC3b(i)];
+            case 3
+                specimenData(i).LC3.axialLoads = [lc3Data.Axial_Load_LC3a(i) lc3Data.Axial_Load_LC3b(i) lc3Data.Axial_Load_LC3c(i) ];
+            otherwise
+                error('Unknwon Number_Of_Axial_Load_Levels');
+        end
+    end
     
     % DxDyFz Pattern
     patternFilename = fullfile(specimenDataDir,[specimenData(i).specimen '-DxDyFzPattern.csv']);
