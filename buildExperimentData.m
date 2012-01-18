@@ -1,4 +1,5 @@
-clear all; close all; clc;
+function buildExperimentData
+tic 
 
 load specimenData.mat
 numSpecimen = length(specimenData);
@@ -6,7 +7,13 @@ numSpecimen = length(specimenData);
 exptDataDir = 'experimentData';
 specimenDataDir = 'specimenData';
 
+% Clear all existing .mat files from the experimental data directory
+delete(fullfile(exptDataDir,'*.mat'));
+
+% Build Data
 for iTest = 1:numSpecimen
+    fprintf('Building Experimental Data for Specimen %i\n',iTest);
+    
     % Retreive Desired Channels
     channels = channelNames(iTest);
     numChannels = length(channels);
@@ -71,7 +78,9 @@ for iTest = 1:numSpecimen
             
     % Split Data Into Load Cases
     lcFilename = fullfile(specimenDataDir,specimenData(iTest).specimen,'LoadCases.csv');
-    if exist(lcFilename,'file') == 2
+    if exist(lcFilename,'file') ~= 2
+        fprintf('  LoadCases.csv not found\n');
+    else
         [~,lcData] = csvread2(lcFilename);
         
         for iLC = 1:length(lcData.Load_Case)
@@ -99,7 +108,9 @@ for iTest = 1:numSpecimen
     
     % Limit Point Data
     lpFilename = fullfile(specimenDataDir,specimenData(iTest).specimen,'LimitPoints.csv');
-    if exist(lpFilename,'file') == 2
+    if exist(lpFilename,'file') ~= 2
+        fprintf('  LimitPoints.csv not found\n');
+    else
         [~,lpData] = csvread2(lpFilename);
         
         % Initilize data structure
@@ -133,4 +144,7 @@ for iTest = 1:numSpecimen
         save(fullfile(exptDataDir,[specimenData(iTest).specimen '-LimitPoints.mat']),...
             'limitPoints','exptDataUnits','-v7.3');
     end    
+end
+
+toc
 end
