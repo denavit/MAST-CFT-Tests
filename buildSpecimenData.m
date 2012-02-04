@@ -38,11 +38,11 @@ for i = 1:numTests
     % Data Parsed From the Specimen Name
     temp = textscan(specimenData(i).specimen,'%n%s%n%n','Delimiter','-');
     specimenData(i).specimenNumber = temp{1};
-    specimenData(i).type2          = temp{2}{1};
+    specimenData(i).group          = temp{2}{1};
     specimenData(i).nominal.L_ft   = temp{3};    
     specimenData(i).nominal.L_in   = 12*specimenData(i).nominal.L_ft;
     specimenData(i).nominal.fc     = temp{4};
-    
+        
     % Initial Imperfections
     specimenData(i).Dxo = imperfData.XTOP(i);
     specimenData(i).Dyo = imperfData.YTOP(i);
