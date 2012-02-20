@@ -1,18 +1,22 @@
-function buildExperimentData
+function buildExperimentData(selectedSpecimens)
 tic 
 
 load specimenData.mat
 numSpecimen = length(specimenData);
+if nargin < 1
+    selectedSpecimens = 1:numSpecimen;
+end
 
 exptDataDir = 'experimentData';
 specimenDataDir = 'specimenData';
 
-% Clear all existing .mat files from the experimental data directory
-delete(fullfile(exptDataDir,'*.mat'));
-
 % Build Data
-for iTest = 1:numSpecimen
-    fprintf('Building Experimental Data for Specimen %i\n',iTest);
+for iTest = selectedSpecimens
+    specimenName = specimenData(iTest).specimen;
+    fprintf('Building Experimental Data for Specimen %s\n',specimenName);
+    
+    % Clear existing .mat files from the experimental data directory
+    delete(fullfile(exptDataDir,[specimenName '*.mat']));
     
     % Retreive Desired Channels
     channels = channelNames(iTest);

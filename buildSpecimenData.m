@@ -153,7 +153,7 @@ for i = 1:numTests
     end
     
     % DxDyFz Pattern
-    patternFilename = fullfile(specimenDataDir,[specimenData(i).specimen '-DxDyFzPattern.csv']);
+    patternFilename = fullfile(specimenDataDir,specimenData(i).specimen,'DxDyFzPattern.csv');
     if exist(patternFilename,'file') == 2
         [~,patternData] = csvread2(patternFilename);
         specimenData(i).DxDyFzPattern.Dx        = patternData.Dx;
