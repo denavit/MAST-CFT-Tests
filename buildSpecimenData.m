@@ -14,17 +14,17 @@ numTests = length(data.name);
 specimenData(numTests) = struct;
 for i = 1:numTests
     specimenData(i).specimen = data.name{i}; 
-    specimenData(i).type = data.type{i};
+    specimenData(i).sectionType = data.type{i};
     specimenData(i).axis = data.axis{i};
     specimenData(i).units = 'US';
-    switch specimenData(i).type
+    switch specimenData(i).sectionType
         case 'ccft'
             specimenData(i).D = data.D(i);
         case 'rcft'
             specimenData(i).H = data.H(i);
             specimenData(i).B = data.B(i);
         otherwise
-            error('unknown type');
+            error('unknown sectionType');
     end
     specimenData(i).t   = data.t(i);
     specimenData(i).L   = data.L(i);
@@ -109,7 +109,7 @@ for i = 1:numTests
                     lc1Data.target_Dx_LC1b(i) lc1Data.target_Dy_LC1b(i)
                     lc1Data.target_Dx_LC1c(i) lc1Data.target_Dy_LC1c(i)];
             otherwise
-                error('Unknwon Number_Of_Cycles');
+                error('Unknown Number_Of_Cycles');
         end
     end
 
