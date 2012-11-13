@@ -91,8 +91,9 @@ for i = 1:numTests
     if isnan(lc1Data.Number_Of_Cycles(i))
         specimenData(i).LC1 = [];
     else
-        specimenData(i).LC1.numCycles   = lc1Data.Number_Of_Cycles(i);
-        specimenData(i).LC1.dirOfMotion = lc1Data.Direction_Of_Motion(i);
+        specimenData(i).LC1.numCycles           = lc1Data.Number_Of_Cycles(i);
+        specimenData(i).LC1.loadLimitsReached   = lc1Data.Load_Limit_Reached(i);
+        specimenData(i).LC1.dirOfMotion         = lc1Data.Direction_Of_Motion(i);
         switch specimenData(i).LC1.numCycles
             case 0
                 specimenData(i).LC1.targets = zeros(0,2);
@@ -147,6 +148,9 @@ for i = 1:numTests
                 specimenData(i).LC3.axialLoads = [lc3Data.Axial_Load_LC3a(i) lc3Data.Axial_Load_LC3b(i)];
             case 3
                 specimenData(i).LC3.axialLoads = [lc3Data.Axial_Load_LC3a(i) lc3Data.Axial_Load_LC3b(i) lc3Data.Axial_Load_LC3c(i) ];
+            case 6
+                specimenData(i).LC3.axialLoads = [lc3Data.Axial_Load_LC3a(i) lc3Data.Axial_Load_LC3b(i) lc3Data.Axial_Load_LC3c(i) ...
+                    lc3Data.Axial_Load_LC3d(i) lc3Data.Axial_Load_LC3e(i) lc3Data.Axial_Load_LC3f(i)];                
             otherwise
                 error('Unknwon Number_Of_Axial_Load_Levels');
         end
