@@ -58,12 +58,10 @@ for iTest = selectedSpecimens
                 % No conversion necessary
                 exptDataUnits.(channel) = 'kip';
             case {'deg','degrees'}
-                exptData.(channel) = convertUnits.angle(...
-                    exptData.(channel),'deg','rad');
+                exptData.(channel) = unitConvert('angle',exptData.(channel),'deg','rad');
                 exptDataUnits.(channel) = 'rad';
             case {'k-ft','kip-ft'}
-                exptData.(channel) = convertUnits.moment(...
-                    exptData.(channel),'kft','kin');
+                exptData.(channel) = unitConvert('moment',exptData.(channel),'kft','kin');
                 exptDataUnits.(channel) = 'kin';
             case 'micro-e'
                 exptData.(channel) = 10^6 * exptData.(channel);
